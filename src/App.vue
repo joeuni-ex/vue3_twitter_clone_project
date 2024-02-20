@@ -1,6 +1,6 @@
 vue
 <template>
-  <div class="flex h-screen">
+  <div class="flex h-screen container mx-auto">
     <!-- 사이드 섹션 -->
     <div
       class="w-20 lg:w-1/4 pt-5 lg:ml-10 flex flex-col justify-between border-r border-gray-200"
