@@ -97,7 +97,8 @@ vue
       <div class="flex h-screen">
         <!-- <Home /> -->
         <!-- <Notifications /> -->
-        <Messages />
+        <!-- <Messages /> -->
+        <Profile />
       </div>
     </div>
   </div>
@@ -108,7 +109,10 @@ import Notifications from "./components/pages/Notifications.vue";
 import Trends from "./components/Trends.vue";
 import Home from "./components/pages/Home.vue";
 import Messages from "./components/pages/Messages.vue";
-export default { components: { Trends, Home, Notifications, Messages } };
+import Profile from "./components/pages/Profile.vue";
+export default {
+  components: { Trends, Home, Notifications, Messages, Profile },
+};
 </script>
 
 <style></style>
