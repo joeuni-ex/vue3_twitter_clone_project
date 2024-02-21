@@ -95,9 +95,6 @@ vue
     <!-- 메인 섹션 -->
     <div class="flex-1">
       <div class="flex h-screen">
-        <!-- <Home /> -->
-        <!-- <Notifications /> -->
-        <!-- <Messages /> -->
         <Profile />
       </div>
     </div>
@@ -105,13 +102,9 @@ vue
 </template>
 
 <script>
-import Notifications from "./components/pages/Notifications.vue";
-import Trends from "./components/Trends.vue";
-import Home from "./components/pages/Home.vue";
-import Messages from "./components/pages/Messages.vue";
-import Profile from "./components/pages/Profile.vue";
+import Profile from "./pages/Profile.vue";
 export default {
-  components: { Trends, Home, Notifications, Messages, Profile },
+  components: { Profile },
 };
 </script>
 

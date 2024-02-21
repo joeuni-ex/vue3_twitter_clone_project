@@ -33,9 +33,9 @@
 </template>
 
 <script>
-import Notifications from "./Notifications.vue";
-import Trends from "../Trends.vue";
-import Tweet from "../Tweet.vue";
+import Notifications from "../components/pages/Notifications.vue";
+import Trends from "../components/Trends.vue";
+import Tweet from "../components/Tweet.vue";
 
 export default { components: { Trends, Notifications, Tweet } };
 </script>

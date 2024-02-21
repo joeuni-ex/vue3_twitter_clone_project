@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import Trends from "../Trends.vue";
+import Trends from "../components/Trends.vue";
 
 export default { components: { Trends } };
 </script>
