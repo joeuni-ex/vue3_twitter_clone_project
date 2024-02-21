@@ -10,54 +10,17 @@ vue
         <i class="fab fa-twitter text-3xl text-primary xl:ml-4 mb-3"></i>
         <!-- 트위터 사이드 메뉴 -->
         <div class="flex flex-col items-start space-y-1">
-          <div
+          <router-link
+            :to="route.path"
             class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
+            v-for="route in routes"
+            :key="route"
           >
-            <i class="fas fa-home fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">홈</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="fas fa-hashtag fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">탐색하기</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="far fa-bell fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">알림</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="far fa-envelope fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">쪽지</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="far fa-bookmark fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">북마크</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="far fa-list-alt fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">리스트</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="far fa-user fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">프로필</span>
-          </div>
-          <div
-            class="hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer"
-          >
-            <i class="fas fa-ellipsis-h fa-fw text-2xl"></i>
-            <span class="ml-3 text-xl hidden xl:inline-block">더보기</span>
-          </div>
+            <i :class="route.icon"></i>
+            <span class="ml-3 text-xl hidden xl:inline-block">{{
+              route.title
+            }}</span>
+          </router-link>
         </div>
         <!-- 트윗 버튼 -->
         <div class="w-full h-12 xl:pr-3 flex justify-center">
@@ -93,18 +56,26 @@ vue
       </div>
     </div>
     <!-- 메인 섹션 -->
-    <div class="flex-1">
-      <div class="flex h-screen">
-        <Profile />
-      </div>
+
+    <div class="flex flex-1 h-screen">
+      <router-view />
     </div>
   </div>
 </template>
 
 <script>
-import Profile from "./pages/Profile.vue";
+import { ref, onBeforeMount } from "vue";
+import router from "./router";
+
 export default {
-  components: { Profile },
+  setup() {
+    const routes = ref([]);
+
+    onBeforeMount(() => {
+      routes.value = router.options.routes;
+    });
+    return { routes };
+  },
 };
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="flex flex-1">
     <!-- 프로필 섹션 -->
-    <div class="flex-1 flex-col border-r border-color">
+    <div class="flex-1 flex flex-col border-r border-color">
       <!-- title -->
       <div class="px-3 py-1 flex border-b border-color">
         <button class="mr-4">
@@ -73,7 +73,7 @@
         </div>
       </div>
       <!-- 트윗들 -->
-      <div class="overflow-y-auto h-screen">
+      <div class="overflow-y-auto">
         <Tweet v-for="tweet in 10" :key="tweet" />
       </div>
     </div>

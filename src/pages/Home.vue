@@ -28,16 +28,14 @@
     </div>
   </div>
   <!-- 트랜드 파트 -->
-  <Notifications />
   <Trends />
 </template>
 
 <script>
-import Notifications from "../components/pages/Notifications.vue";
 import Trends from "../components/Trends.vue";
 import Tweet from "../components/Tweet.vue";
 
-export default { components: { Trends, Notifications, Tweet } };
+export default { components: { Trends, Tweet } };
 </script>
 
 <style></style>
