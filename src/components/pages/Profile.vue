@@ -15,7 +15,7 @@
         </div>
       </div>
       <!-- 프로필 백그라운드 이미지-->
-      <div class="bg-gray-300 h-40 relative">
+      <div class="bg-gray-300 h-40 relative flex-none">
         <!-- 프로필이미지 -->
         <div
           class="w-28 h-28 border-4 border-white bg-gray-100 rounded-full absolute -bottom-14 left-2"
@@ -49,6 +49,7 @@
           <span class="text-gray">팔로워</span>
         </div>
       </div>
+      <!-- 탭들 -->
       <div class="flex border-b border-color mt-3">
         <div
           class="py-3 w-1/4 text-primary font-bold border-b border-primary text-center hover:bg-blue-50 cursor-pointer hover:text-primary"
@@ -71,6 +72,10 @@
           트윗
         </div>
       </div>
+      <!-- 트윗들 -->
+      <div class="overflow-y-auto h-screen">
+        <Tweet v-for="tweet in 10" :key="tweet" />
+      </div>
     </div>
     <!-- 트랜드 섹션 -->
     <Trends />
@@ -79,8 +84,9 @@
 
 <script>
 import Trends from "../Trends.vue";
+import Tweet from "../Tweet.vue";
 
-export default { components: { Trends } };
+export default { components: { Trends, Tweet } };
 </script>
 
 <style></style>
