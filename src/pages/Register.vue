@@ -30,7 +30,9 @@
     >
       회원가입
     </button>
-    <button class="text-primary">계정이 이미 있으신가요 로그인하기</button>
+    <router-link to="/login">
+      <button class="text-primary">계정이 이미 있으신가요? 로그인하기</button>
+    </router-link>
   </div>
 </template>
 <script>
