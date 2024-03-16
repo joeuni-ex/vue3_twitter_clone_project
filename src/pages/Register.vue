@@ -7,13 +7,13 @@
     ></i>
     <span class="text-2xl font-bold">트위떠 회원가입</span>
     <input
-      v-model="username"
+      v-model="email"
       type="email"
       class="rounded w-96 px-4 py-3 border border-gray-200 focus:ring-2 focus:outline-none focus:border-primary"
       placeholder="이메일"
     />
     <input
-      v-model="email"
+      v-model="username"
       type="text"
       class="rounded w-96 px-4 py-3 border border-gray-200 focus:ring-2 focus:outline-none focus:border-primary"
       placeholder="아이디"
@@ -37,6 +37,9 @@
 </template>
 <script>
 import { ref } from "vue";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../firebase";
+
 export default {
   setup() {
     // 변수 ref(초기값) usestate 와 동일
@@ -46,8 +49,18 @@ export default {
     const loading = ref(false);
 
     //회원가입 클릭 시 실행되는 함수
-    const onRegister = () => {
-      console.log(username.value, email.value, password.value);
+    const onRegister = async () => {
+      try {
+        const credential = createUserWithEmailAndPassword(
+          auth,
+          email.value,
+          password.value
+        );
+        console.log(credential);
+      } catch (e) {
+        console.log("에러발생", e);
+        alert(e.message);
+      }
     };
 
     return {
