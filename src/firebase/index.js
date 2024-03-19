@@ -20,12 +20,10 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 //인증
-const auth = getAuth(app);
+export const auth = getAuth(app);
 
 //파이어스토어
-const db = getFirestore(app);
+export const db = getFirestore(app);
 
 //스토리지
-const storage = getStorage(app);
-
-export { auth, db, storage };
+export const storage = getStorage(app);
