@@ -19,12 +19,17 @@
       placeholder="아이디"
     />
     <input
+      @keyup.enter="onRegister"
       v-model="password"
       type="password"
       class="rounded w-96 px-4 py-3 border border-gray-200 focus:ring-2 focus:outline-none focus:border-primary"
       placeholder="비밀번호"
     />
+    <button v-if="loading" class="w-96 rounded bg-light text-white py-4">
+      회원가입중 입니다.
+    </button>
     <button
+      v-else
       @click="onRegister"
       class="w-96 rounded bg-primary text-white py-4 hover:bg-dark"
     >
@@ -38,7 +43,9 @@
 <script>
 import { ref } from "vue";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../firebase";
+import { useRouter } from "vue-router";
 
 export default {
   setup() {
@@ -47,19 +54,42 @@ export default {
     const email = ref("");
     const password = ref("");
     const loading = ref(false);
+    const router = useRouter();
 
     //회원가입 클릭 시 실행되는 함수
     const onRegister = async () => {
+      if (!username.value || !email.value || !password.value) {
+        alert("유저네임, 이메일, 비밀번호를 모두 확인해 주세요.");
+        return;
+      }
       try {
-        const credential = createUserWithEmailAndPassword(
+        loading.value = true; //로딩 시작
+        //인증 사용자 추가 및 유저 정보만 가져오기
+        const { user } = await createUserWithEmailAndPassword(
           auth,
           email.value,
           password.value
         );
-        console.log(credential);
+
+        //회원가입 시 유저 정보 db 저장하기
+        await setDoc(doc(db, "users", user.uid), {
+          uid: user.uid,
+          email: email.value,
+          profile_image_url: "/profile/jpeg",
+          num_tweets: 0,
+          followers: [],
+          followings: [],
+          created_at: Date.now(),
+        });
+
+        alert("회원가입에 성공하였습니다. 로그인 해주세요.");
+        //회원가입 성공 시 로그인 페이지로 이동
+        router.push("/login");
       } catch (e) {
         console.log("에러발생", e);
         alert(e.message);
+      } finally {
+        loading.value = false; //로딩 종료
       }
     };
 
