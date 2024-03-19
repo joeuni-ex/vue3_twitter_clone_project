@@ -50,6 +50,10 @@ export default {
 
     //회원가입 클릭 시 실행되는 함수
     const onLogin = async () => {
+      if (!email.value || !password.value) {
+        alert("이메일, 비밀번호를 모두 확인해 주세요.");
+        return;
+      }
       try {
         loading.value = true;
         const { user } = await signInWithEmailAndPassword(

@@ -86,8 +86,20 @@ export default {
         //회원가입 성공 시 로그인 페이지로 이동
         router.push("/login");
       } catch (e) {
-        console.log("에러발생", e);
-        alert(e.message);
+        switch (e.code) {
+          case "auth/invalid-email":
+            alert("잘못된 이메일 형식입니다");
+            break;
+          case "auth/week-password":
+            alert("비밀번호가 너무 쉬워요");
+            break;
+          case "auth/email-already-in-use":
+            alert("이미 가입되어 있는 이메일입니다.");
+            break;
+          default:
+            alert("회원가입 실패");
+            break;
+        }
       } finally {
         loading.value = false; //로딩 종료
       }
