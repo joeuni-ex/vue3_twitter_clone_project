@@ -35,7 +35,7 @@ vue
         </div>
       </div>
       <!-- 프로필 버튼 -->
-      <div class="xl:mr-3 mb-3">
+      <div class="xl:mr-3 mb-3" @click="showProfileDropdown = true">
         <button
           class="hidden xl:flex mt-3 px-2 py-1 w-full h-12 rounded-full hover:bg-blue-50 items-center"
         >
@@ -62,21 +62,56 @@ vue
     <div class="flex flex-1 h-screen">
       <router-view />
     </div>
+    <!-- 프로필 드롭다운 메뉴 -->
+    <div
+      class="absolute bottom-20 left-12 shadow rounded-lg w-70"
+      v-if="showProfileDropdown"
+      @click="showProfileDropdown = false"
+    >
+      <button
+        class="hover:bg-gray-50 border-b border-gray-100 flex p-3 w-full items-center"
+      >
+        <img src="http://picsum.photos/100" class="w-10 h-10 rounded-full" />
+        <div class="mx-4">
+          <div class="font-bold text-sm">dmsdl8917@ddddddd.com</div>
+          <div class="text-left text-sm text-gray-500">@joeuni</div>
+        </div>
+        <i class="fas fa-check text-primary ml-auto"></i>
+      </button>
+      <button
+        class="hover:bg-gray-50 p-3 w-full text-left text-sm"
+        @click="onLogout"
+      >
+        @joeuni 계정에서 로그아웃
+      </button>
+    </div>
   </div>
 </template>
 
 <script>
 import { ref, onBeforeMount } from "vue";
 import router from "../router";
+import { signOut } from "firebase/auth";
+import { auth } from "../firebase";
+import store from "../store";
 
 export default {
   setup() {
     const routes = ref([]);
+    const showProfileDropdown = ref(false);
 
     onBeforeMount(() => {
       routes.value = router.options.routes;
     });
-    return { routes };
+
+    //로그아웃 함수
+    const onLogout = async () => {
+      await signOut(auth);
+      store.commit("SET_USERS", null);
+      await router.replace("./login");
+    };
+
+    return { routes, showProfileDropdown, onLogout };
   },
 };
 </script>
