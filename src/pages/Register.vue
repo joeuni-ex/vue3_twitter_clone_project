@@ -74,6 +74,7 @@ export default {
         //회원가입 시 유저 정보 db 저장하기
         await setDoc(doc(db, "users", user.uid), {
           uid: user.uid,
+          username: username.value,
           email: email.value,
           profile_image_url: "/profile/jpeg",
           num_tweets: 0,
