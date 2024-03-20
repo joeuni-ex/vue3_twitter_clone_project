@@ -36,9 +36,11 @@
   </div>
 </template>
 <script>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../firebase";
+import { auth, db } from "../firebase";
+import { doc, getDoc } from "firebase/firestore";
+import store from "../store";
 import { useRouter } from "vue-router";
 export default {
   setup() {
@@ -47,6 +49,10 @@ export default {
     const password = ref("");
     const loading = ref(false);
     const router = useRouter();
+
+    onMounted(() => {
+      console.log(store.state.user);
+    });
 
     //회원가입 클릭 시 실행되는 함수
     const onLogin = async () => {
@@ -61,7 +67,14 @@ export default {
           email.value,
           password.value
         );
-        console.log(user.uid);
+
+        //get user info
+        const docRef = doc(db, "users", user.uid);
+        const docSnap = await getDoc(docRef); // users에서 user.uid로 검색한 결과 가져옴
+        console.log(docSnap.data); //검색 결과 테스트
+        store.commit("SET_USERS", docSnap.data()); //store의 SET_USERS에 상태 저장하기
+        console.log(store.state.user);
+
         router.replace("/"); //뒤로가기 클릭하면 로그인 페이지로 이동못하게함
       } catch (e) {
         switch (e.code) {
