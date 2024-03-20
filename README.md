@@ -1,7 +1,16 @@
-# Vue 3 + Vite
+# Vue 3 + Vite + tailwindCSS + firebase 를 활용한 트위터 클론 프로젝트
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+## 💻 프로젝트 소개
+# Vue 3 + Vite + tailwindCSS + firebase 를 활용한 트위터 클론 프로젝트
 
-## Recommended IDE Setup
 
-- [VS Code](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
+## ⚙️개발환경
+**Front-end**
+- Vue3 (Vite)
+- tailwindCSS
+  
+**Back-end**
+- Firebase(Authentication)
+- Firebase(Storage)
+- Firestore(DB)
+
