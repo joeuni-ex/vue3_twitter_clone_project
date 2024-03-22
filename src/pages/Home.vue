@@ -6,16 +6,25 @@
       <!-- 트윗팅 섹션 -->
       <div class="flex px-3 py-3 border-b-8 border-gray-100">
         <img
-          src="http://picsum.photos/200"
+          :src="currentUser.profile_image_url"
           class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
         />
         <div class="ml-2 flex-1 flex flex-col">
           <textarea
+            v-model="tweetBody"
             placeholder="무슨 일이 일어나고 있나요?"
             class="w-full text-lg font-bold focus:outline-none mb-3 resize-none"
           ></textarea>
           <div class="text-right">
             <button
+              v-if="!tweetBody.length"
+              class="bg-light text-sm font-bold text-white px-4 py-1 rounded-full"
+            >
+              트윗
+            </button>
+            <button
+              v-else
+              @click="onAddTweet"
               class="bg-primary hover:bg-dark text-sm font-bold text-white px-4 py-1 rounded-full"
             >
               트윗
@@ -24,7 +33,7 @@
         </div>
       </div>
       <!-- 트윗 -->
-      <Tweet v-for="tweet in 10" :key="tweet" />
+      <Tweet v-for="tweet in 5" :key="tweet" :currentUser="currentUser" />
     </div>
   </div>
   <!-- 트랜드 파트 -->
@@ -34,8 +43,39 @@
 <script>
 import Trends from "../components/Trends.vue";
 import Tweet from "../components/Tweet.vue";
+import { ref, computed } from "vue";
+import store from "../store";
+import { doc, setDoc, collection } from "firebase/firestore";
+import { db } from "../firebase";
 
-export default { components: { Trends, Tweet } };
+export default {
+  components: { Trends, Tweet },
+  setup() {
+    const tweetBody = ref("");
+    const currentUser = computed(() => store.state.user);
+
+    const onAddTweet = async () => {
+      try {
+        //tweet 저장하기
+        const newTweetRef = doc(collection(db, "tweets"));
+        await setDoc(newTweetRef, {
+          id: newTweetRef.id,
+          tweet_body: tweetBody.value,
+          uid: currentUser.value.uid,
+          created_at: Date.now(),
+          num_comments: 0,
+          num_retweets: 0,
+          num_likes: 0,
+        });
+        tweetBody.value = "";
+      } catch (e) {
+        console.log("트윗 에러 메시지", e);
+      }
+    };
+
+    return { currentUser, tweetBody, onAddTweet };
+  },
+};
 </script>
 
 <style></style>

@@ -4,7 +4,7 @@
     class="flex px-3 py-3 border-b border-gray-100 hover:bg-gray-50 cursor-pointer"
   >
     <img
-      src="http://picsum.photos/200"
+      :src="currentUser.profile_image_url"
       class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
     />
     <div class="ml-3 placeholder:flex-1 flex flex-col">
@@ -42,7 +42,9 @@
 </template>
 
 <script>
-export default {};
+export default {
+  props: ["currentUser"],
+};
 </script>
 
 <style></style>
