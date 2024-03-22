@@ -53,6 +53,7 @@ import store from "../store";
 import {
   doc,
   setDoc,
+  getDoc,
   collection,
   onSnapshot,
   query,
@@ -71,12 +72,13 @@ export default {
     onBeforeMount(() => {
       const q = query(collection(db, "tweets"), orderBy("created_at", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
-        snapshot.docChanges().forEach((change) => {
+        snapshot.docChanges().forEach(async (change) => {
+          let tweet = await getUserInfo(change.doc.data());
           if (change.type === "added") {
-            tweets.value.splice(change.newIndex, 0, change.doc.data());
+            tweets.value.splice(change.newIndex, 0, tweet);
           }
           if (change.type === "modified") {
-            tweets.value.splice(change.oldIndex, 1, change.doc.data());
+            tweets.value.splice(change.oldIndex, 1, tweet);
           }
           if (change.type === "removed") {
             tweets.value.splice(change.oldIndex, 1);
@@ -84,6 +86,15 @@ export default {
         });
       });
     });
+
+    const getUserInfo = async (tweet) => {
+      const docRef = doc(db, "users", tweet.uid);
+      const docSnap = await getDoc(docRef); // users에서 user.uid로 검색한 결과 가져옴
+      tweet.profile_image_url = docSnap.data().profile_image_url;
+      tweet.email = docSnap.data().email;
+      tweet.username = docSnap.data().username;
+      return tweet;
+    };
 
     const onAddTweet = async () => {
       try {

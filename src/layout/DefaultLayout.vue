@@ -43,13 +43,13 @@ vue
         >
           <!-- 100은 이미지 사이즈임  -->
           <img
-            :src="currentUser.profile_image_url"
+            :src="currentUser?.profile_image_url"
             class="w-10 h-10 rounded-full"
           />
           <div class="xl:ml-2 hidden xl:block">
-            <div class="text-sm font-bold">{{ currentUser.email }}</div>
+            <div class="text-sm font-bold">{{ currentUser?.email }}</div>
             <div class="text-xs text-gray-500 text-left">
-              @{{ currentUser.username }}
+              @{{ currentUser?.username }}
             </div>
           </div>
           <i
