@@ -90,9 +90,10 @@ export default {
     const getUserInfo = async (tweet) => {
       const docRef = doc(db, "users", tweet.uid);
       const docSnap = await getDoc(docRef); // users에서 user.uid로 검색한 결과 가져옴
-      tweet.profile_image_url = docSnap.data().profile_image_url;
-      tweet.email = docSnap.data().email;
-      tweet.username = docSnap.data().username;
+      // tweet.profile_image_url = docSnap.data().profile_image_url;
+      // tweet.email = docSnap.data().email;
+      // tweet.username = docSnap.data().username;
+      tweet = { ...tweet, ...docSnap.data() };
       return tweet;
     };
 
