@@ -12,7 +12,7 @@ vue
         <div class="flex flex-col items-start space-y-1">
           <router-link
             :to="route.path"
-            :class="`hover:text-primary hover:bg-blue-50 px-4 py-2 rounded-full cursor-pointer ${
+            :class="`hover:text-primary hover:bg-blue-50 p-2 lg:px-4 lg:py-2 rounded-full cursor-pointer ${
               router.currentRoute.value.name == route.name ? 'text-primary' : ''
             }`"
             v-for="route in routes"
@@ -115,7 +115,9 @@ export default {
     const currentUser = computed(() => store.state.user);
 
     onBeforeMount(() => {
-      routes.value = router.options.routes;
+      routes.value = router.options.routes.filter(
+        (route) => route.meta.isMenu == true
+      );
     });
 
     //로그아웃 함수
