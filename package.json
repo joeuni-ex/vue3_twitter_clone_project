@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "firebase": "^10.9.0",
+    "moment": "^2.30.1",
     "vue": "^3.4.15",
     "vue-router": "^4.0.13",
     "vuex": "^4.0.2",

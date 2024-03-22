@@ -33,7 +33,12 @@
         </div>
       </div>
       <!-- 트윗 -->
-      <Tweet v-for="tweet in 5" :key="tweet" :currentUser="currentUser" />
+      <Tweet
+        v-for="tweet in tweets"
+        :key="tweet.id"
+        :currentUser="currentUser"
+        :tweet="tweet"
+      />
     </div>
   </div>
   <!-- 트랜드 파트 -->
@@ -43,9 +48,16 @@
 <script>
 import Trends from "../components/Trends.vue";
 import Tweet from "../components/Tweet.vue";
-import { ref, computed } from "vue";
+import { ref, computed, onBeforeMount } from "vue";
 import store from "../store";
-import { doc, setDoc, collection } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  collection,
+  onSnapshot,
+  query,
+  orderBy,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export default {
@@ -53,6 +65,25 @@ export default {
   setup() {
     const tweetBody = ref("");
     const currentUser = computed(() => store.state.user);
+    const tweets = ref([]);
+
+    //트윗 실시간 가져오기
+    onBeforeMount(() => {
+      const q = query(collection(db, "tweets"), orderBy("created_at", "desc"));
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach((change) => {
+          if (change.type === "added") {
+            tweets.value.splice(change.newIndex, 0, change.doc.data());
+          }
+          if (change.type === "modified") {
+            tweets.value.splice(change.oldIndex, 1, change.doc.data());
+          }
+          if (change.type === "removed") {
+            tweets.value.splice(change.oldIndex, 1);
+          }
+        });
+      });
+    });
 
     const onAddTweet = async () => {
       try {
@@ -73,7 +104,7 @@ export default {
       }
     };
 
-    return { currentUser, tweetBody, onAddTweet };
+    return { currentUser, tweetBody, onAddTweet, tweets };
   },
 };
 </script>

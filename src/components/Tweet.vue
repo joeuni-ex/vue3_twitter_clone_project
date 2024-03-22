@@ -9,29 +9,30 @@
     />
     <div class="ml-3 placeholder:flex-1 flex flex-col">
       <div class="text-sm space-x-1">
-        <span class="font-bold">{{ currentUser.username }}</span>
-        <span>.</span>
-        <span class="text-gray-500 text-xs">{{ currentUser.username }}</span>
-        <span class="text-gray-500 text-xs">7분</span>
+        <span class="font-bold">{{ tweet.uid }}</span>
+        <span>@</span>
+        <span class="text-gray-500 text-xs">.</span>
+        <span class="text-gray-500 text-xs">{{
+          moment(tweet.created_at).fromNow()
+        }}</span>
       </div>
       <!-- 트윗 바디 -->
       <div>
-        Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequuntur
-        expedita , et rem non.
+        {{ tweet.tweet_body }}
       </div>
       <!-- 트윗 아이콘 -->
       <div class="flex justify-between">
         <div class="text-gray-500 hover:text-primary">
           <i class="far fa-comment hover:bg-blue-50 rounded-full p-2"></i>
-          <span class="ml-1 text-sm">10</span>
+          <span class="ml-1 text-sm">{{ tweet.num_comments }}</span>
         </div>
         <div class="text-gray-500 hover:text-green-500">
           <i class="fas fa-retweet hover:bg-green-50 rounded-full p-2"></i>
-          <span class="ml-1 text-sm">10</span>
+          <span class="ml-1 text-sm">{{ tweet.num_retweets }}</span>
         </div>
         <div class="text-gray-500 hover:text-red-500">
           <i class="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
-          <span class="ml-1 text-sm">10</span>
+          <span class="ml-1 text-sm">{{ tweet.num_likes }}</span>
         </div>
         <div class="text-gray-500 hover:text-primary">
           <i class="far fa-share-square hover:bg-blue-50 rounded-full p-2"></i>
@@ -42,8 +43,14 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
-  props: ["currentUser"],
+  props: ["currentUser", "tweet"],
+  setup() {
+    return {
+      moment,
+    };
+  },
 };
 </script>
 
