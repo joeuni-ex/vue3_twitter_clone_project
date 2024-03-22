@@ -9,9 +9,9 @@
     />
     <div class="ml-3 placeholder:flex-1 flex flex-col">
       <div class="text-sm space-x-1">
-        <span class="font-bold">석지니</span>
+        <span class="font-bold">{{ currentUser.username }}</span>
         <span>.</span>
-        <span class="text-gray-500 text-xs">석지니</span>
+        <span class="text-gray-500 text-xs">{{ currentUser.username }}</span>
         <span class="text-gray-500 text-xs">7분</span>
       </div>
       <!-- 트윗 바디 -->
