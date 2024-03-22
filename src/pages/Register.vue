@@ -76,7 +76,7 @@ export default {
           uid: user.uid,
           username: username.value,
           email: email.value,
-          profile_image_url: "/profile/jpeg",
+          profile_image_url: "/profile.jpeg",
           num_tweets: 0,
           followers: [],
           followings: [],
