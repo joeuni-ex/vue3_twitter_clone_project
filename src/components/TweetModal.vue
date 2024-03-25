@@ -27,7 +27,7 @@
             <!-- 트윗팅 섹션 -->
             <div class="flex p-4">
               <img
-                src="http://picsum.photos/100"
+                :src="currentUser.profile_image_url"
                 class="w-10 h-10 rounded-full hover:opacity-80 cursor-pointer"
               />
               <div class="ml-2 flex-1 flex flex-col">
@@ -62,13 +62,29 @@
 </template>
 
 <script>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import addTweet from "../utils/addTweet";
+import store from "../store";
 export default {
-  setup() {
+  setup(props, { emit }) {
     const tweetBody = ref("");
+    const currentUser = computed(() => store.state.user);
+
+    //트윗 추가 함수 -> utils의 addTweet함수
+    const onAddTweet = async () => {
+      try {
+        addTweet(tweetBody.value, currentUser.value);
+        tweetBody.value = "";
+        emit("close-modal"); //상위 컴포넌트에 close-modal실행
+      } catch (e) {
+        console.log("트윗 에러 메시지", e);
+      }
+    };
 
     return {
       tweetBody,
+      onAddTweet,
+      currentUser,
     };
   },
 };

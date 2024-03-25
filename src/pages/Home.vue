@@ -60,6 +60,7 @@ import {
   orderBy,
 } from "firebase/firestore";
 import { db } from "../firebase";
+import addTweet from "../utils/addTweet";
 
 export default {
   components: { Trends, Tweet },
@@ -99,17 +100,7 @@ export default {
 
     const onAddTweet = async () => {
       try {
-        //tweet 저장하기
-        const newTweetRef = doc(collection(db, "tweets"));
-        await setDoc(newTweetRef, {
-          id: newTweetRef.id,
-          tweet_body: tweetBody.value,
-          uid: currentUser.value.uid,
-          created_at: Date.now(),
-          num_comments: 0,
-          num_retweets: 0,
-          num_likes: 0,
-        });
+        addTweet(tweetBody.value, currentUser.value);
         tweetBody.value = "";
       } catch (e) {
         console.log("트윗 에러 메시지", e);
