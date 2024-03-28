@@ -61,6 +61,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import addTweet from "../utils/addTweet";
+import getTweetInfo from "../utils/getTweetInfo";
 
 export default {
   components: { Trends, Tweet },
@@ -74,7 +75,7 @@ export default {
       const q = query(collection(db, "tweets"), orderBy("created_at", "desc"));
       const unsubscribe = onSnapshot(q, (snapshot) => {
         snapshot.docChanges().forEach(async (change) => {
-          let tweet = await getUserInfo(change.doc.data());
+          let tweet = await getTweetInfo(change.doc.data(), currentUser.value);
           if (change.type === "added") {
             tweets.value.splice(change.newIndex, 0, tweet);
           }
@@ -87,16 +88,6 @@ export default {
         });
       });
     });
-
-    const getUserInfo = async (tweet) => {
-      const docRef = doc(db, "users", tweet.uid);
-      const docSnap = await getDoc(docRef); // users에서 user.uid로 검색한 결과 가져옴
-      // tweet.profile_image_url = docSnap.data().profile_image_url;
-      // tweet.email = docSnap.data().email;
-      // tweet.username = docSnap.data().username;
-      tweet = { ...tweet, ...docSnap.data() };
-      return tweet;
-    };
 
     const onAddTweet = async () => {
       try {
