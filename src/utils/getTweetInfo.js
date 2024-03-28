@@ -34,5 +34,22 @@ export default async (tweet, currentUser) => {
     tweet.isRetweeted = true;
   }
 
+  // Adding like Info
+  const likesRef = collection(db, "likes");
+
+  const likesq = query(
+    likesRef,
+    where("from_tweet_id", "==", tweet.id),
+    where("uid", "==", currentUser.uid)
+  );
+
+  const likesSnapshot = await getDocs(likesRef);
+
+  if (likesSnapshot.empty) {
+    tweet.isLiked = false;
+  } else {
+    tweet.isLiked = true;
+  }
+
   return tweet;
 };

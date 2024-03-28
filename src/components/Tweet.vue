@@ -33,13 +33,20 @@
         <!-- 리트윗 버튼  -->
         <div
           @click="handleRetweet(tweet)"
-          :class="`${tweet.isRetweeted ? 'text-green-500' : 'text-gray-500'}`"
+          :class="`${
+            tweet.isRetweeted ? 'text-green-400' : 'text-gray-500'
+          } hover:text-green-500`"
         >
           <i class="fas fa-retweet hover:bg-green-50 rounded-full p-2"></i>
           <span class="ml-1 text-sm">{{ tweet.num_retweets }}</span>
         </div>
         <!-- 라이크 버튼  -->
-        <div class="text-gray-500 hover:text-red-500">
+        <div
+          @click="handleLikes(tweet)"
+          :class="`${
+            tweet.isLiked ? 'text-red-400' : 'text-gray-500'
+          } hover:text-red-500`"
+        >
           <i class="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
           <span class="ml-1 text-sm">{{ tweet.num_likes }}</span>
         </div>
@@ -62,6 +69,7 @@ import moment from "moment";
 import CommentModal from "./CommentModal.vue";
 import { ref } from "vue";
 import handleRetweet from "../utils/handleRetweet";
+import handleLikes from "../utils/handleLikes";
 
 export default {
   components: { CommentModal },
@@ -73,6 +81,7 @@ export default {
       moment,
       showCommentModal,
       handleRetweet,
+      handleLikes,
     };
   },
 };
