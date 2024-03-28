@@ -43,7 +43,7 @@ export default async (tweet, currentUser) => {
     where("uid", "==", currentUser.uid)
   );
 
-  const likesSnapshot = await getDocs(likesRef);
+  const likesSnapshot = await getDocs(likesq);
 
   if (likesSnapshot.empty) {
     tweet.isLiked = false;

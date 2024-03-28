@@ -44,7 +44,7 @@
             </div>
             <div>
               <!-- 오리지널 트윗 -->
-              <div class="flex px-4 pt-4 pb-3">
+              <div class="flex px-4 pt-4 pb-3" v-if="tweet">
                 <div class="flex flex-col">
                   <img
                     :src="tweet.profile_image_url"

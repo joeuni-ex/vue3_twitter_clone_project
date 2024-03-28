@@ -42,14 +42,22 @@
         </div>
         <!-- 라이크 버튼  -->
         <div
+          v-if="tweet.isLiked"
           @click="handleLikes(tweet)"
-          :class="`${
-            tweet.isLiked ? 'text-red-400' : 'text-gray-500'
-          } hover:text-red-500`"
+          class="text-red-400 hover:text-red-500`"
         >
           <i class="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
           <span class="ml-1 text-sm">{{ tweet.num_likes }}</span>
         </div>
+        <div
+          v-else
+          @click="handleLikes(tweet)"
+          class="text-gray-400 hover:text-red-500`"
+        >
+          <i class="far fa-heart hover:bg-red-50 rounded-full p-2"></i>
+          <span class="ml-1 text-sm">{{ tweet.num_likes }}</span>
+        </div>
+
         <!-- 쉐어 버튼  -->
         <div class="text-gray-500 hover:text-primary">
           <i class="far fa-share-square hover:bg-blue-50 rounded-full p-2"></i>
