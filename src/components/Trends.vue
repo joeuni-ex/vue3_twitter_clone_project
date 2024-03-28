@@ -33,7 +33,7 @@
         </div>
         <div></div>
       </div>
-      <div class="hover:px-4 py-2 hover:bg-gray-100">
+      <div class="px-4 py-2 hover:bg-gray-100">
         <span class="text-primary text-lg rounded-xl">더 보기</span>
       </div>
     </div>
@@ -67,7 +67,7 @@
         </div>
         <div></div>
       </div>
-      <div class="hover:px-4 py-2 hover:bg-gray-100">
+      <div class="px-4 py-2 hover:bg-gray-100">
         <span class="text-primary text-lg rounded-xl">더 보기</span>
       </div>
     </div>
