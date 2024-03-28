@@ -54,7 +54,7 @@ export default {
       //  console.log(store.state.user);
     });
 
-    //회원가입 클릭 시 실행되는 함수
+    //로그인 클릭 시 실행되는 함수
     const onLogin = async () => {
       if (!email.value || !password.value) {
         alert("이메일, 비밀번호를 모두 확인해 주세요.");
@@ -71,10 +71,9 @@ export default {
         //get user info
         const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef); // users에서 user.uid로 검색한 결과 가져옴
-        //console.log(docSnap.data); //검색 결과 테스트
+        // console.log(docSnap.data); //검색 결과 테스트
         store.commit("SET_USERS", docSnap.data()); //store의 SET_USERS에 상태 저장하기
-        //console.log(store.state.user);
-
+        // console.log(store.state.user);
         router.replace("/"); //뒤로가기 클릭하면 로그인 페이지로 이동못하게함
       } catch (e) {
         switch (e.code) {

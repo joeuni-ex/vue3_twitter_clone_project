@@ -21,6 +21,7 @@
           <div class="bg-white">
             <div class="border-b border-gray-100 p-2">
               <button
+                @click="$emit('close-modal')"
                 class="fas fa-times text-primary text-lg p-2 h-10 w-10 hover:bg-blue-50"
               ></button>
             </div>
