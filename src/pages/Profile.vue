@@ -10,8 +10,8 @@
           ></i>
         </button>
         <div>
-          <div class="font-extrabold text-lg">이름</div>
-          <div class="text-xs text-gray">232 트윗</div>
+          <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
+          <div class="text-xs text-gray">{{ currentUser.num_tweets }} 트윗</div>
         </div>
       </div>
       <!-- 프로필 백그라운드 이미지-->
@@ -36,16 +36,20 @@
       </div>
       <!-- 유저 정보 -->
       <div class="mx-3 mt-2">
-        <div class="font-extrabold text-lg">이름</div>
-        <div class="text-gray">아이디</div>
+        <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
+        <div class="text-gray">@{{ currentUser.username }}</div>
         <div>
           <span class="text-gray">가입일:</span>
-          <span class="text-gray">2011년 10월</span>
+          <span class="text-gray">
+            {{ moment(currentUser.created_at).format("YYYY년 MM월") }}</span
+          >
         </div>
         <div>
-          <span class="font-bold mr-1">28</span>
+          <span class="font-bold mr-1">{{
+            currentUser.followings.length
+          }}</span>
           <span class="text-gray mr-3">팔로우 중</span>
-          <span class="font-bold mr-1">27</span>
+          <span class="font-bold mr-1">{{ currentUser.followers.length }}</span>
           <span class="text-gray">팔로워</span>
         </div>
       </div>
@@ -74,7 +78,12 @@
       </div>
       <!-- 트윗들 -->
       <div class="overflow-y-auto">
-        <Tweet v-for="tweet in 10" :key="tweet" />
+        <Tweet
+          v-for="tweet in tweets"
+          :tweet="tweet"
+          :key="tweet"
+          :currentUser="currentUser"
+        />
       </div>
     </div>
     <!-- 트랜드 섹션 -->
@@ -85,7 +94,62 @@
 <script>
 import Trends from "../components/Trends.vue";
 import Tweet from "../components/Tweet.vue";
-export default { components: { Trends, Tweet } };
+import store from "../store";
+import { computed, ref, onBeforeMount } from "vue";
+import {
+  onSnapshot,
+  doc,
+  collection,
+  where,
+  orderBy,
+  query,
+} from "firebase/firestore";
+import { db } from "../firebase";
+import getTweetInfo from "../utils/getTweetInfo";
+import moment from "moment";
+export default {
+  components: { Trends, Tweet },
+  setup() {
+    const currentUser = computed(() => store.state.user);
+    const tweets = ref([]);
+
+    onBeforeMount(() => {
+      //get user
+      const userDocRef = doc(db, "users", currentUser.value.uid);
+      const getUserInfo = query(userDocRef);
+      const un = onSnapshot(getUserInfo, (doc) => {
+        store.commit("SET_USERS", doc.data());
+      });
+
+      //get tweets
+      const q = query(
+        collection(db, "tweets"),
+        where("uid", "==", currentUser.value.uid),
+        orderBy("created_at", "desc")
+      );
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          let tweet = await getTweetInfo(change.doc.data(), currentUser.value);
+          if (change.type === "added") {
+            tweets.value.splice(change.newIndex, 0, tweet);
+          }
+          if (change.type === "modified") {
+            tweets.value.splice(change.oldIndex, 1, tweet);
+          }
+          if (change.type === "removed") {
+            tweets.value.splice(change.oldIndex, 1);
+          }
+        });
+      });
+    });
+
+    return {
+      currentUser,
+      tweets,
+      moment,
+    };
+  },
+};
 </script>
 
 <style></style>

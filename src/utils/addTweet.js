@@ -1,4 +1,10 @@
-import { doc, setDoc, collection } from "firebase/firestore";
+import {
+  doc,
+  setDoc,
+  collection,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
 import { db } from "../firebase";
 
 export default (tweetBody, currentUser) => {
@@ -15,6 +21,13 @@ export default (tweetBody, currentUser) => {
         num_retweets: 0,
         num_likes: 0,
       });
+
+      const updateUsersRef = doc(db, "users", currentUser.uid);
+
+      await updateDoc(updateUsersRef, {
+        num_tweets: increment(1),
+      });
+
       resolve(true);
     } catch (e) {
       reject(e);

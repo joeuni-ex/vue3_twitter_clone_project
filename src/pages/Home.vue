@@ -89,8 +89,6 @@ export default {
       });
     });
 
-    console.log(tweets.value);
-
     const onAddTweet = async () => {
       try {
         addTweet(tweetBody.value, currentUser.value);
