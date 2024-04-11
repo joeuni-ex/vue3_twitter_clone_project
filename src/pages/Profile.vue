@@ -1,17 +1,17 @@
 <template>
-  <div class="flex flex-1">
+  <div class="flex flex-1" v-if="profileUser">
     <!-- 프로필 섹션 -->
     <div class="flex-1 flex flex-col border-r border-color">
       <!-- title -->
       <div class="px-3 py-1 flex border-b border-color">
-        <button class="mr-4">
+        <button class="mr-4" @click="router.go(-1)">
           <i
             class="fas fa-arrow-left text-primary p-3 py-1 rounded-full hover:bg-blue-50"
           ></i>
         </button>
         <div>
-          <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
-          <div class="text-xs text-gray">{{ currentUser.num_tweets }} 트윗</div>
+          <div class="font-extrabold text-lg">{{ profileUser.email }}</div>
+          <div class="text-xs text-gray">{{ profileUser.num_tweets }} 트윗</div>
         </div>
       </div>
       <!-- 프로필 백그라운드 이미지-->
@@ -21,7 +21,7 @@
           class="w-28 h-28 border-4 border-white bg-gray-100 rounded-full absolute -bottom-14 left-2"
         >
           <img
-            src="http://picsum.photos/200"
+            :src="`${profileUser.profile_image_url}`"
             class="rounded-full opacity-90 hover:opacity-100 cursor-pointer"
           />
         </div>
@@ -36,50 +36,58 @@
       </div>
       <!-- 유저 정보 -->
       <div class="mx-3 mt-2">
-        <div class="font-extrabold text-lg">{{ currentUser.email }}</div>
-        <div class="text-gray">@{{ currentUser.username }}</div>
+        <div class="font-extrabold text-lg">{{ profileUser.email }}</div>
+        <div class="text-gray">@{{ profileUser.username }}</div>
         <div>
           <span class="text-gray">가입일:</span>
           <span class="text-gray">
-            {{ moment(currentUser.created_at).format("YYYY년 MM월") }}</span
+            {{ moment(profileUser.created_at).format("YYYY년 MM월") }}</span
           >
         </div>
         <div>
           <span class="font-bold mr-1">{{
-            currentUser.followings.length
+            profileUser.followings.length
           }}</span>
           <span class="text-gray mr-3">팔로우 중</span>
-          <span class="font-bold mr-1">{{ currentUser.followers.length }}</span>
+          <span class="font-bold mr-1">{{ profileUser.followers.length }}</span>
           <span class="text-gray">팔로워</span>
         </div>
       </div>
       <!-- 탭들 -->
       <div class="flex border-b border-color mt-3">
         <div
-          class="py-3 w-1/4 text-primary font-bold border-b border-primary text-center hover:bg-blue-50 cursor-pointer hover:text-primary"
+          @click="currentTab = 'tweet'"
+          :class="`${
+            currentTab == 'tweet' ? 'border-b border-primary' : 'text-gray'
+          } py-3 w-1/3 text-primary font-bold  text-center hover:bg-blue-50 cursor-pointer hover:text-primary`"
         >
           트윗
         </div>
         <div
-          class="py-3 w-1/4 text-gray font-bold text-center hover:bg-blue-50 cursor-pointer hover:text-primary"
+          @click="currentTab = 'retweet'"
+          :class="`${
+            currentTab == 'retweet' ? 'border-b border-primary' : 'text-gray'
+          } py-3 w-1/3 text-primary font-bold text-center hover:bg-blue-50 cursor-pointer hover:text-primary`"
         >
-          트윗
+          리트윗
         </div>
         <div
-          class="py-3 w-1/4 text-gray font-bold text-center hover:bg-blue-50 cursor-pointer hover:text-primary"
+          @click="currentTab = 'like'"
+          :class="`${
+            currentTab == 'like' ? 'border-b border-primary' : 'text-gray'
+          } py-3 w-1/3 text-primary font-bold  text-center hover:bg-blue-50 cursor-pointer hover:text-primary`"
         >
-          트윗
-        </div>
-        <div
-          class="py-3 w-1/4 text-gray font-bold text-center hover:bg-blue-50 cursor-pointer hover:text-primary"
-        >
-          트윗
+          좋아요
         </div>
       </div>
       <!-- 트윗들 -->
       <div class="overflow-y-auto">
         <Tweet
-          v-for="tweet in tweets"
+          v-for="tweet in currentTab == 'tweet'
+            ? tweets
+            : currentTab == 'retweet'
+            ? reTweets
+            : likes"
           :tweet="tweet"
           :key="tweet"
           :currentUser="currentUser"
@@ -103,31 +111,42 @@ import {
   where,
   orderBy,
   query,
+  getDoc,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import getTweetInfo from "../utils/getTweetInfo";
 import moment from "moment";
+import { useRoute } from "vue-router";
+import router from "../router";
+
 export default {
   components: { Trends, Tweet },
   setup() {
     const currentUser = computed(() => store.state.user);
+    const profileUser = ref(null);
     const tweets = ref([]);
+    const reTweets = ref([]);
+    const likes = ref([]);
+    const currentTab = ref("tweet");
+    const route = useRoute();
 
     onBeforeMount(() => {
+      const profileUID = route.params.uid ?? currentUser.value.uid;
+
       //get user
-      const userDocRef = doc(db, "users", currentUser.value.uid);
+      const userDocRef = doc(db, "users", profileUID);
       const getUserInfo = query(userDocRef);
       const un = onSnapshot(getUserInfo, (doc) => {
-        store.commit("SET_USERS", doc.data());
+        profileUser.value = doc.data();
       });
 
       //get tweets
-      const q = query(
+      const tweetsQuery = query(
         collection(db, "tweets"),
-        where("uid", "==", currentUser.value.uid),
+        where("uid", "==", profileUID),
         orderBy("created_at", "desc")
       );
-      const unsubscribe = onSnapshot(q, (snapshot) => {
+      const tweetsUn = onSnapshot(tweetsQuery, (snapshot) => {
         snapshot.docChanges().forEach(async (change) => {
           let tweet = await getTweetInfo(change.doc.data(), currentUser.value);
           if (change.type === "added") {
@@ -141,12 +160,73 @@ export default {
           }
         });
       });
+
+      //get retweets
+      const retweetsQuery = query(
+        collection(db, "retweets"),
+        where("uid", "==", profileUID),
+        orderBy("created_at", "desc")
+      );
+      const retweetsUn = onSnapshot(retweetsQuery, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          const docRef = doc(db, "tweets", change.doc.data().from_tweet_id);
+          const docSnap = await getDoc(docRef); // Fetch the document snapshot
+
+          if (docSnap.exists()) {
+            // Ensure the document exists
+            let retweet = await getTweetInfo(docSnap.data(), currentUser.value);
+
+            if (change.type === "added") {
+              reTweets.value.splice(change.newIndex, 0, retweet);
+            }
+            if (change.type === "modified") {
+              reTweets.value.splice(change.oldIndex, 1, retweet);
+            }
+            if (change.type === "removed") {
+              reTweets.value.splice(change.oldIndex, 1);
+            }
+          }
+        });
+      });
+
+      //get likes
+      const likesQuery = query(
+        collection(db, "likes"),
+        where("uid", "==", profileUID),
+        orderBy("created_at", "desc")
+      );
+      const likesUn = onSnapshot(likesQuery, (snapshot) => {
+        snapshot.docChanges().forEach(async (change) => {
+          const docRef = doc(db, "tweets", change.doc.data().from_tweet_id);
+          const docSnap = await getDoc(docRef); // Fetch the document snapshot
+
+          if (docSnap.exists()) {
+            // Ensure the document exists
+            let like = await getTweetInfo(docSnap.data(), currentUser.value);
+
+            if (change.type === "added") {
+              likes.value.splice(change.newIndex, 0, like);
+            }
+            if (change.type === "modified") {
+              likes.value.splice(change.oldIndex, 1, like);
+            }
+            if (change.type === "removed") {
+              likes.value.splice(change.oldIndex, 1);
+            }
+          }
+        });
+      });
     });
 
     return {
       currentUser,
+      profileUser,
       tweets,
+      reTweets,
+      likes,
       moment,
+      currentTab,
+      router,
     };
   },
 };
