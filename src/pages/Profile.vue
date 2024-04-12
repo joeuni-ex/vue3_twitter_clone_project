@@ -33,6 +33,7 @@
       <!-- 프로필 수정 버튼 -->
       <div class="text-right mr-2 mt-2">
         <button
+          v-if="currentUser.uid === profileUser.uid"
           @click="showProfileEditModal = true"
           class="border border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full text-sm"
         >
