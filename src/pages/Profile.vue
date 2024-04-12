@@ -22,13 +22,14 @@
         >
           <img
             :src="`${profileUser.profile_image_url}`"
-            class="rounded-full opacity-90 hover:opacity-100 cursor-pointer"
+            class="w-28 h-28 rounded-full opacity-90 hover:opacity-100 cursor-pointer"
           />
         </div>
       </div>
       <!-- 프로필 수정 버튼 -->
       <div class="text-right mr-2 mt-2">
         <button
+          @click="showProfileEditModal = true"
           class="border border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full text-sm"
         >
           프로필 수정
@@ -96,6 +97,10 @@
     </div>
     <!-- 트랜드 섹션 -->
     <Trends />
+    <profile-edit-modal
+      v-if="showProfileEditModal"
+      @close-modal="showProfileEditModal = false"
+    />
   </div>
 </template>
 
@@ -118,9 +123,10 @@ import getTweetInfo from "../utils/getTweetInfo";
 import moment from "moment";
 import { useRoute } from "vue-router";
 import router from "../router";
+import ProfileEditModal from "../components/ProfileEditModal.vue";
 
 export default {
-  components: { Trends, Tweet },
+  components: { Trends, Tweet, ProfileEditModal },
   setup() {
     const currentUser = computed(() => store.state.user);
     const profileUser = ref(null);
@@ -129,6 +135,8 @@ export default {
     const likes = ref([]);
     const currentTab = ref("tweet");
     const route = useRoute();
+
+    const showProfileEditModal = ref(false);
 
     onBeforeMount(() => {
       const profileUID = route.params.uid ?? currentUser.value.uid;
@@ -227,6 +235,7 @@ export default {
       moment,
       currentTab,
       router,
+      showProfileEditModal,
     };
   },
 };
