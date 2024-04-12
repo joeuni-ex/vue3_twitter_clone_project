@@ -31,14 +31,40 @@
         </div>
       </div>
       <!-- 프로필 수정 버튼 -->
-      <div class="text-right mr-2 mt-2 h-14">
-        <button
-          v-if="currentUser.uid === profileUser.uid"
-          @click="showProfileEditModal = true"
-          class="border border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full text-sm"
-        >
-          프로필 수정
-        </button>
+      <div class="text-right mr-2 mt-2 mb-10 relative">
+        <div v-if="currentUser.uid === profileUser.uid">
+          <button
+            @click="showProfileEditModal = true"
+            class="border border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full text-sm"
+          >
+            프로필 수정
+          </button>
+        </div>
+        <div v-else>
+          <div
+            v-if="currentUser.followings.includes(profileUser.uid)"
+            class="relative"
+            @click="onUnFollow"
+          >
+            <button
+              class="absolute w-24 right-0 text-sm bg-primary text-white px-3 py-2 hover:opacity-0 font-bold rounded-full"
+            >
+              팔로잉
+            </button>
+            <button
+              class="absolute w-24 right-0 text-sm bg-red-400 text-white px-3 py-2 opacity-0 hover:opacity-100 font-bold rounded-full"
+            >
+              언팔로우
+            </button>
+          </div>
+          <div v-else @click="onFollow">
+            <button
+              class="absolute right-0 w-24 border text-sm border-primary text-primary px-3 py-2 hover:bg-blue-50 font-bold rounded-full"
+            >
+              팔로우
+            </button>
+          </div>
+        </div>
       </div>
       <!-- 유저 정보 -->
       <div class="mx-3 mt-2">
@@ -122,6 +148,9 @@ import {
   orderBy,
   query,
   getDoc,
+  updateDoc,
+  arrayRemove,
+  arrayUnion,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import getTweetInfo from "../utils/getTweetInfo";
@@ -231,6 +260,36 @@ export default {
       });
     });
 
+    //팔로우
+    const onFollow = async () => {
+      const userDocRef = doc(db, "users", currentUser.value.uid);
+      await updateDoc(userDocRef, {
+        followings: arrayUnion(profileUser.value.uid),
+      });
+
+      const ProfileUserDocRef = doc(db, "users", profileUser.value.uid);
+      await updateDoc(ProfileUserDocRef, {
+        followers: arrayUnion(currentUser.value.uid),
+      });
+
+      store.commit("SET_FOLLOW", profileUser.value.uid);
+    };
+
+    //언팔로우
+    const onUnFollow = async () => {
+      const userDocRef = doc(db, "users", currentUser.value.uid);
+      await updateDoc(userDocRef, {
+        followings: arrayRemove(profileUser.value.uid),
+      });
+
+      const ProfileUserDocRef = doc(db, "users", profileUser.value.uid);
+      await updateDoc(ProfileUserDocRef, {
+        followers: arrayRemove(currentUser.value.uid),
+      });
+
+      store.commit("SET_UN_FOLLOW", profileUser.value.uid);
+    };
+
     return {
       currentUser,
       profileUser,
@@ -241,6 +300,8 @@ export default {
       currentTab,
       router,
       showProfileEditModal,
+      onUnFollow,
+      onFollow,
     };
   },
 };
