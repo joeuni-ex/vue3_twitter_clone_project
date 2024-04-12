@@ -15,14 +15,18 @@
         </div>
       </div>
       <!-- 프로필 백그라운드 이미지-->
-      <div class="bg-gray-300 h-40 relative flex-none">
+      <div class="bg-gray-300 h-48 relative flex-none">
+        <img
+          :src="`${profileUser.background_image_url}`"
+          class="w-full h-48 object-cover"
+        />
         <!-- 프로필이미지 -->
         <div
           class="w-28 h-28 border-4 border-white bg-gray-100 rounded-full absolute -bottom-14 left-2"
         >
           <img
             :src="`${profileUser.profile_image_url}`"
-            class="w-28 h-28 rounded-full opacity-90 hover:opacity-100 cursor-pointer"
+            class="w-full h-full rounded-full opacity-90 hover:opacity-100 cursor-pointer"
           />
         </div>
       </div>

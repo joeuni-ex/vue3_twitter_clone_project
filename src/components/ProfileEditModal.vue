@@ -46,7 +46,7 @@
                 class="bg-gray-300 h-40 relative flex-none flex items-center justify-center"
               >
                 <img
-                  src="/background.png"
+                  :src="`${currentUser.background_image_url}`"
                   ref="backgroundImage"
                   class="object-cover absolute h-full w-full"
                 />
@@ -64,7 +64,7 @@
 
                 <!-- profile image -->
                 <img
-                  src="/profile.jpeg"
+                  :src="`${currentUser.profile_image_url}`"
                   ref="profileImage"
                   class="border-4 border-white w-28 h-28 absolute -bottom-14 left-2 rounded-full"
                 />
@@ -211,8 +211,14 @@ export default {
 
           const userDocRef = doc(db, "users", currentUser.value.uid);
           await updateDoc(userDocRef, { profile_image_url: profileImageUrl });
-        }
 
+          store.commit("SET_PROFILE_IMAGE", profileImageUrl);
+        }
+      } catch (e) {
+        console.error("Error uploading profile images:", error);
+      }
+
+      try {
         if (backgroundImageData.value) {
           const backgroundStorageRef = storageRef(
             storage,
@@ -230,12 +236,14 @@ export default {
           await updateDoc(userDocRef, {
             background_image_url: backgroundImageUrl,
           });
-        }
 
-        emit("close-modal");
-      } catch (error) {
+          store.commit("SET_BACKGROUND_IMAGE", backgroundImageUrl);
+        }
+      } catch (e) {
         console.error("Error uploading profile images:", error);
       }
+
+      emit("close-modal");
     };
 
     return {
