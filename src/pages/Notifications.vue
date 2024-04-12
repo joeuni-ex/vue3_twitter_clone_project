@@ -47,7 +47,7 @@ export default {
       currentUser.value.followings.forEach(async (following) => {
         // Adding retweet Info
         const tweetRef = collection(db, "tweets");
-        const dataFrom = Date.now() - 60 * 60 * 24 * 7 * 1000; //일주일
+        const dataFrom = Date.now() - 60 * 60 * 24 * 30 * 1000; //일주일
 
         const q = query(
           tweetRef,
