@@ -185,13 +185,13 @@ export default {
       let reader = new FileReader();
       //이미지 선택되었을 때
       profileImageData.value = file;
+
       reader.onload = function (e) {
         profileImage.value.src = e.target.result;
       };
       reader.readAsDataURL(file);
     };
 
-    //스토리지 저장
     const onSaveProfile = async () => {
       if (!profileImageData.value && !backgroundImageData.value) {
         return;

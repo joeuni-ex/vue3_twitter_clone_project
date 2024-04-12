@@ -31,7 +31,7 @@
         </div>
       </div>
       <!-- 프로필 수정 버튼 -->
-      <div class="text-right mr-2 mt-2">
+      <div class="text-right mr-2 mt-2 h-14">
         <button
           v-if="currentUser.uid === profileUser.uid"
           @click="showProfileEditModal = true"
