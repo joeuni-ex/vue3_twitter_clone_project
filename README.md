@@ -12,6 +12,8 @@
 - Firebase(Storage)
 - Firestore(DB)
 
+![image](https://github.com/joeuni-ex/vue3_twitter_clone_project/assets/141595215/9d238cd8-70cf-4c0e-8697-3a5fbbd5888b)
+
 
 ## 📌주요기능
 
