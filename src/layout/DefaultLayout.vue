@@ -59,7 +59,7 @@ vue
         </button>
         <div class="xl:hidden flex justify-center">
           <img
-            src="http://picsum.photos/100"
+            :src="currentUser?.profile_image_url"
             class="w-10 h-10 rounded-full cursor-pointer hover:opacity-80"
           />
         </div>
